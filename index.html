@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You ❤️</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+body { margin: 0; overflow: hidden; background: #020208; height: 100vh; display: flex; justify-content: center; align-items: center; }
+h1 { position: absolute; top: 12%; color: #00eaff; font-family: 'Great Vibes', cursive; font-size: 45px; text-shadow: 0 0 20px rgba(0, 234, 255, 0.6); user-select: none; z-index: 10; animation: textPulse 2s infinite ease-in-out; }
+@keyframes textPulse { 0%, 100% { text-shadow: 0 0 20px rgba(0, 234, 255, 0.6); transform: scale(1); } 50% { text-shadow: 0 0 35px rgba(0, 234, 255, 0.9); transform: scale(1.03); } }
+canvas { position: absolute; top: 0; left: 0; }
+</style>
+</head>
+<body>
+<h1>I Love You</h1>
+<canvas id="heart"></canvas>
+<script>
+const canvas = document.getElementById("heart"); const ctx = canvas.getContext("2d");
+function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resize();
+let particles = [];
+function heart(t) {
+  let x = 16 * Math.pow(Math.sin(t), 3);
+  let y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+  return { x: x * 11, y: y * 11 };
+}
+for (let i = 0; i < 450; i++) {
+  let t = Math.random() * Math.PI * 2; let p = heart(t);
+  particles.push({ x: canvas.width/2 + p.x, y: canvas.height/2 + p.y, ox: p.x, oy: p.y, size: Math.random() * 2 + 0.8, speed: Math.random() * 0.02 });
+}
+let time = 0;
+function animate(){
+  ctx.fillStyle = "rgba(2, 2, 8, 0.2)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  time += 0.05;
+  let pulseFactor = Math.pow(Math.sin(time), 2) * (Math.sin(time) > 0 ? 1 : 0.3);
+  let pulse = pulseFactor * 0.15;
+  particles.forEach(p => {
+    let x = canvas.width/2 + p.ox * (1 + pulse); let y = canvas.height/2 + p.oy * (1 + pulse);
+    let shimmer = Math.sin(time + p.speed * 100) * 0.3;
+    ctx.beginPath(); ctx.arc(x, y, Math.max(0.5, p.size + shimmer), 0, Math.PI * 2);
+    ctx.fillStyle = "#00d9ff"; ctx.shadowBlur = 15; ctx.shadowColor = "#00ffff"; ctx.fill();
+  });
+  requestAnimationFrame(animate);
+}
+animate();
+window.onresize = () => { resize(); }
+</script>
+</body>
+</html>
